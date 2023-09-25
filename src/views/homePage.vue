@@ -1,50 +1,36 @@
 <template>
-<!-- eslint-disable -->
-  <el-row style='padding: 0 10px 0px 30px;height: 100vh;background: #efefef;' >
-    <el-col :md='{span: 18}' :sm='{span: 24}'>
-      <!-- <Inputs/> -->
-      <!-- <Device @switchDevice='switchDevice'/> -->
-      <!-- <h1 style='font-size: 14px;font-weight: 500'>{{ t('operation') }}</h1> -->
-      <!-- <div class='btn-line'>
-        <el-button type='primary' @click='handleJoin'>
-          Join Room
-        </el-button>
-        <el-button type='primary' @click='handlePublish'>
-          Publish
-        </el-button>
-        <el-button type='primary' @click='handleUnpublish'>
-          Unpublish
-        </el-button>
-        <el-button type='primary' @click='handleLeave'>
-          Leave Room
-        </el-button>
-      </div> -->
-      <!-- <div class='btn-line'>
-        <el-button type='primary' @click='handleStartShare'>Start Share Screen</el-button>
-        <el-button type='primary' @click='handleStopShare'>Stop Share Screen</el-button>
-      </div> -->
-      <!-- <div class='share-link' v-if='store.isJoined'>
-        <div class='alert'>{{ t('invite') }}</div>
-        <div class='invite'>
-          <button class="invite-btn" @click='copy'>
-            <img src="../assets/clippy.svg" alt="Copy to clipboard" class='clip'>
-          </button>
-          <el-input id="foo" v-model="inviteLink"></el-input>
-        </div>
-      </div> -->
-      <div class='pusher'>
-        <!-- <div class='local' id='local' v-if='store.isJoined'>
-          <div class='tag'>
-            <div :class="audioMuted ? 'muteAudio' :'unmuteAudio'" @click='muteAudio'></div>
-            <div :class="videoMuted ? 'muteVideo' :'unmuteVideo'" @click='muteVideo'></div>
-          </div>
-        </div> -->
-      </div>
-        <Player @doSth="handleLeave"/>
-      
-<!-- {{store.remoteStreams}} -->
-       <!-- <button @click="handleLeave">挂断</button> -->
-    </el-col>
+<!--  eslint-disable   -->
+  <el-row style='padding: 0 10px 40px 10px' class="elRowClass" id="myBtn">
+    <span class="absenceSeats" v-if="!whetherFirstAidOrNnot">
+      坐席空闲中...
+    </span>
+    <span class="idleState" v-else @click="answerTheJump">
+      <span class="AnswerImgClass">
+        <img src="../assets/dianhuasvg.svg" alt="" style="width:100%;heigth:100%">
+      </span>
+      <span class="AnswertextClass">
+        接听
+      </span>
+    </span>
+    
+    <audio controls autoplay loop v-if="whetherFirstAidOrNnot" id="bgmusic" style="display:none">
+        <source src="../assets/jijiuche.wav">
+        <track kind="captions" src="your-empty-captions-file.vtt" srclang="en" label="English Captions">
+  </audio>
+
+  <!-- <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 
+:src="wavAudio"
+style="top:0px;position:absolute;z-index:2;left:0px"></iframe> -->
+
+  <!-- <iframe
+    
+        
+        frameborder="0"
+        wmode="transparent | window"
+        style="opacity: 0.0.1;"
+    ></iframe> -->
+    <!-- <iframe  allow = "autoplay" title="这里是 iframe 内容的描述"/> -->
+    <!-- <iframe allow="autoplay" hidden src="../assets/jijiuche.wav"></iframe> -->
   </el-row>
 </template>
 
@@ -61,12 +47,130 @@ import Device from '@/components/Device.vue';
 import Player from '@/components/Player.vue';
 import appStore from '@/store/index';
 import ShareClient from '@/utils/shareClient';
-import { useRoute,useRouter } from 'vue-router';
-import { onMounted,nextTick,onBeforeUnmount } from 'vue'
+import { useRouter } from "vue-router";
+import TencentCloudChat from '@tencentcloud/chat';
+import {Howl, Howler} from 'howler';
 
-const route = useRoute()
-const userouter = useRouter()
 
+let options = {
+  SDKAppID: 1400386885 // 接入时需要将0替换为您的即时通信 IM 应用的 SDKAppID
+};
+// 创建 SDK 实例，`TIM.create()`方法对于同一个 `SDKAppID` 只会返回同一份实例
+var chat = TencentCloudChat.create(options); // SDK 实例通常用 chat 表示
+
+
+chat.setLogLevel(0); // 普通级别，日志量较多，接入时建议使用
+
+
+// 监听事件，例如：
+chat.on(TencentCloudChat.EVENT.SDK_READY, function (event) {
+// 收到离线消息和会话列表同步完毕通知，接入侧可以调用 sendMessage 等需要鉴权的接口
+// event.name - TIM.EVENT.SDK_READY
+console.log(event.name,'eventname');
+
+    });
+
+
+
+let onMessageReceived = function(event) {
+  // event.data - 存储 Message 对象的数组 - [Message]
+  const messageList = event.data;
+  messageList.forEach((message) => {
+    if (message.type === TencentCloudChat.TYPES.MSG_TEXT) {
+      // 文本消息 - https://web.sdk.qcloud.com/im/doc/v3/zh-cn/Message.html#.TextPayload
+      console.log('文本消息',JSON.parse(event?.data[0].payload.text).data);
+      whetherFirstAidOrNnot.value = true
+      roomId.value = JSON.parse(event?.data[0].payload.text).data
+      // store.roomId = roomId.value  
+      // console.log(store.roomId,'roomIdvalue');
+      
+    } else if (message.type === TencentCloudChat.TYPES.MSG_IMAGE) {
+      // 图片消息 - https://web.sdk.qcloud.com/im/doc/v3/zh-cn/Message.html#.ImagePayload
+      console.log('图片消息');
+
+    } else if (message.type === TencentCloudChat.TYPES.MSG_SOUND) {
+      // 音频消息 - https://web.sdk.qcloud.com/im/doc/v3/zh-cn/Message.html#.AudioPayload
+      console.log('音频消息');
+
+    } else if (message.type === TencentCloudChat.TYPES.MSG_VIDEO) {
+      // 视频消息 - https://web.sdk.qcloud.com/im/doc/v3/zh-cn/Message.html#.VideoPayload
+      console.log('视频消息');
+
+    } else if (message.type === TencentCloudChat.TYPES.MSG_FILE) {
+      // 文件消息 - https://web.sdk.qcloud.com/im/doc/v3/zh-cn/Message.html#.FilePayload
+      console.log('文件消息');
+
+    } else if (message.type === TencentCloudChat.TYPES.MSG_CUSTOM) {
+      // 自定义消息 - https://web.sdk.qcloud.com/im/doc/v3/zh-cn/Message.html#.CustomPayload
+      console.log('自定义消息');
+
+    } else if (message.type === TencentCloudChat.TYPES.MSG_MERGER) {
+      // 合并消息 - https://web.sdk.qcloud.com/im/doc/v3/zh-cn/Message.html#.MergerPayload
+      console.log('合并消息');
+
+    } else if (message.type === TencentCloudChat.TYPES.MSG_LOCATION) {
+      // 地理位置消息 - https://web.sdk.qcloud.com/im/doc/v3/zh-cn/Message.html#.LocationPayload
+      console.log('地理位置消息');
+
+    } else if (message.type === TencentCloudChat.TYPES.MSG_GRP_TIP) {
+      // 群提示消息 - https://web.sdk.qcloud.com/im/doc/v3/zh-cn/Message.html#.GroupTipPayload
+      console.log('群提示消息');
+
+    } else if (message.type === TencentCloudChat.TYPES.MSG_GRP_SYS_NOTICE) {
+      // 群系统通知 - https://web.sdk.qcloud.com/im/doc/v3/zh-cn/Message.html#.GroupSystemNoticePayload
+      console.log('群系统通知');
+
+    }
+  });
+};
+// var sound = new Howl({
+//   src: [wavAudio],
+//   loop: true,
+// });
+// sound.play();  
+chat.on(TencentCloudChat.EVENT.MESSAGE_RECEIVED, onMessageReceived);
+// 开始登录
+chat.login({userID: '1434048604182233090', userSig: 'eJw9jr0OgjAUhd*lq4bc0tummDi4sIBR1IWRlAI3CEFERI3vroBxPD-fyXmxU3h07NBQa9mKS1RSASwnt7ctWzHXATbra1omTUPpt4cAQiut5ZxQauuOMpoAjgIBtQLk2nWFAO8-QPmYl5uiXhySwA*HgEf94x4V51tsKrPLnvm215R35rL3SxOvf2BH1fhOeShBcO69P2lZNIc_'});
+
+const send=(type, to, payload)=> {
+let message = chat.createTextMessage({
+  to: '1430829915148386305',
+  conversationType: TencentCloudChat.TYPES.CONV_C2C,
+  // 消息优先级，用于群聊。如果某个群的消息超过了频率限制，后台会优先下发高优先级的消息
+  // priority: TencentCloudChat.TYPES.MSG_PRIORITY_NORMAL,
+  payload: {
+    text: JSON.stringify({"messageType":900,"data":""})
+  },
+  // 如果您发消息需要已读回执，需购买旗舰版套餐，并且创建消息时将 needReadReceipt 设置为 true
+  needReadReceipt: true
+  // 消息自定义数据（云端保存，会发送到对端，程序卸载重装后还能拉取到）
+  // cloudCustomData: 'your cloud custom data'
+});
+// 2. 发送消息
+let promise = chat.sendMessage(message);
+promise.then(function(imResponse) {
+  // 发送成功
+  console.log(imResponse);
+}).catch(function(imError) {
+  // 发送失败
+  console.warn('sendMessage error:', imError);
+});
+
+    }
+  // sound.stop();
+ 
+
+const answerTheJump=()=>{
+    router.push({
+    name: 'console', // 目标路由的名称
+    query: {
+      page: roomId.value, // 查询参数
+    },
+})
+  }
+
+
+const router = useRouter()
 const $bus = inject('$bus');
 const $aegis: any = inject('$aegis');
 
@@ -76,10 +180,16 @@ const store = appStore();
 let localClient: Client;
 let localStream: LocalStream;
 let shareClient: any;
+const whetherFirstAidOrNnot = ref(false)
 const audioMuted = ref(false);
 const videoMuted = ref(false);
+const roomId = ref('');
 
 const inviteLink = ref<string>();
+
+const pushfun = ()=>{
+  router.push('/console')
+}
 
 const addSuccessLog = (str: string) => {
   store.logs.push({
@@ -168,20 +278,7 @@ async function createLocalStream() {
   }
 }
 
-onMounted(() => {
-      handleJoin()
-    })
-// onBeforeUnmount(()=>{
-//   handleLeave()
-// })
-
 async function handleJoin() {
-  store.sdkAppId = '1400386885'
-  store.secretKey = '6e3d1939c4bf142211500724be71a26d439d83dc24277c42ce78c5b3a133a3e5'
-  store.userId = 'user_54123472'
-  store.roomId = route.query?.page as any
-  console.log( store.roomId,'storestore');
-
   if (!store.getInitParamsStates()) {
     ElMessage({ message: t('paramsNeed'), type: 'error' });
     return;
@@ -303,10 +400,6 @@ async function handleLeave() {
       ext2: 'webrtcQuickDemoVue3',
       ext3: store.sdkAppId,
     });
-
-     userouter.push({
-      name:'homePage'
-     })
   } catch (error: any) {
     addFailedLog(`Leave room failed. Error: ${error.message_}`);
     $aegis.reportEvent({
@@ -486,42 +579,32 @@ function copy() {
 </script>
 
 <style lang='stylus' scoped>
-.FamilyMembers
-  display: flex
-  align-items: center
-  justify-content: center
-
-.elRowClass
-  height: 100vh
-  background: red
-
 .btn-line
   padding-bottom 10px
 
-.remote
-  width 60%
-  height 100%
-  margin 0 
-  position relative
+.idleState
+  display: flex
+  align-items: center
+  justify-content: center
+  flex-direction: column
+  cursor pointer
 
-.handleLeaveClass
-  position absolute
-  bottom: -75px;
-  width: 100%;
-  align-items: center;
-  justify-content: space-between;
-  display: flex;
-  height: 100px;
-  background: #ffff;
+.AnswertextClass
+  font-size:35px
 
-@media (max-width: 540px)
-  .remote
-    width 100%
-    min-height 100px
-    margin 0 10px 10px 0
-    position relative
-    margin-right: 0;
+.AnswerImgClass
+  width: 250px
 
+.absenceSeats
+  font-size: 40px
+
+
+.elRowClass
+  background: #efefef
+  height: 100vh
+  display: flex
+  align-items: center
+  justify-content: center
 
 .share-link
   color #084298

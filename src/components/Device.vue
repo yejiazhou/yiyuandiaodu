@@ -1,4 +1,5 @@
 <template>
+<!-- /* eslint-disable */ -->
   <div class='select-container'>
     <h1 style='font-size: 14px;font-weight: 500'>{{ t('device') }}</h1>
     <el-row :gutter='10'>
@@ -38,6 +39,7 @@
 </template>
 
 <script lang='ts' setup>
+/* eslint-disable */ 
 import { defineEmits } from 'vue';
 import { useI18n } from 'vue-i18n';
 import TRTC from 'trtc-js-sdk';

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { genTestUserSig } from '@/utils/generateTestUserSig';
-
+/* eslint-disable */ 
 const appStore = defineStore('app', {
   state: () => ({
     sdkAppId: '',
@@ -22,6 +22,8 @@ const appStore = defineStore('app', {
   getters: {},
   actions: {
     getInitParamsStates() {
+      console.log(this.sdkAppId , this.secretKey ,this.roomId ,this.userId,'thissdkAppIduserId');
+      
       return !!(this.sdkAppId && this.secretKey && this.roomId && this.userId);
     },
     getUserSig() {

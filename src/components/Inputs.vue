@@ -1,6 +1,7 @@
 <template>
   <div class='inputs-container'>
     <h1 style='font-size: 14px;font-weight: 500'>{{t('param')}}</h1>
+    <button @click="JumpBack">跳转回去</button>
     <el-row :gutter='10'>
       <el-col :span="12">
         <el-input v-model="store.sdkAppId" placeholder="sdkAppId" type='number'>
@@ -25,22 +26,25 @@
         </el-input>
       </el-col>
     </el-row>
-    <div class='alert'>
+    <!-- <div class='alert'>
       <el-alert
         type="error"
         :closable="false"
       >
         <span class='alert'>{{ t('alert')}} <a target="_blank" :href="t('url')">{{ t('click')}}</a></span>
       </el-alert>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script lang='ts' setup>
+/* eslint-disable */ 
 import { useI18n } from 'vue-i18n';
 import { getParamKey } from '@/utils/utils';
 import appStore from '../store/index';
+import { useRouter } from "vue-router";
 
+const router = useRouter()
 const { t } = useI18n();
 // init input params
 const store = appStore();
@@ -52,6 +56,10 @@ store.$patch({
 });
 const state = { url: window.location.href.split('?')[0] };
 window.history.pushState(state, '', 'index.html#/');
+
+const JumpBack = ()=>{
+  router.push('/')
+}
 
 </script>
 
