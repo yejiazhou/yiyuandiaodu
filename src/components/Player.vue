@@ -140,6 +140,12 @@
             救护车3<el-icon class="el-icon--right"><PhoneFilled /></el-icon>
           </el-button>
           </span>
+          <span class="FirstMedicalUniversityres" v-if="waitingBeAnswered">
+            <span class="AnsweringClass">救护车1正在接听中…</span>
+            <span class="loadingClass">
+              <img src="../assets/loading.gif" alt="" style="width:100%;height:100%">
+            </span>
+          </span>
         </span>
         <span class="contactInformation">
           <span class="bottomClass">
@@ -204,8 +210,11 @@ import { PhoneFilled } from '@element-plus/icons-vue'
 import type { TabsPaneContext } from 'element-plus'
 
 import TencentCloudChat from '@tencentcloud/chat';
+import { useRoute,useRouter } from 'vue-router';
 
+const route = useRoute()
 
+const waitingBeAnswered = ref(false)
 let options = {
   SDKAppID: 1400386885 // 接入时需要将0替换为您的即时通信 IM 应用的 SDKAppID
 };
@@ -278,6 +287,8 @@ chat.on(TencentCloudChat.EVENT.MESSAGE_RECEIVED, onMessageReceived);
 // 开始登录
 chat.login({userID: '1434048604853321730', userSig: 'eJw9TssKgkAU-ZfZFnKduTOOQptA6QWC5qJlMFNcxRzMTIj*PdNocRbnyXmx4yH37OCotSzyJSqpAJaT2tuWRYx7wGZ*N9XZOTJjDgGEVlrL2SFjbx1daCr4KBBQqxFSCO4H4j9A19FPmrh8FvmjCdMqHeIM3anj5WJng7IHWteIVRLvs63aFKtfsaP6*06FKEEEXL8-OuwzAQ__'});
 
+
+// 医院到救护车
 const send=()=> {
 let message = chat.createTextMessage({
   to: '1352902597856288770',
@@ -285,7 +296,35 @@ let message = chat.createTextMessage({
   // 消息优先级，用于群聊。如果某个群的消息超过了频率限制，后台会优先下发高优先级的消息
   // priority: TencentCloudChat.TYPES.MSG_PRIORITY_NORMAL,
   payload: {
-    text: JSON.stringify({"messageType":901,"data":"救护是否已准备"})
+    text: JSON.stringify({"messageType":901,"data":"咨询救护车是否接听"})
+  },
+  // 如果您发消息需要已读回执，需购买旗舰版套餐，并且创建消息时将 needReadReceipt 设置为 true
+  needReadReceipt: true
+  // 消息自定义数据（云端保存，会发送到对端，程序卸载重装后还能拉取到）
+  // cloudCustomData: 'your cloud custom data'
+});
+// 2. 发送消息
+let promise = chat.sendMessage(message);
+promise.then(function(imResponse) {
+  // 发送成功
+  console.log(imResponse);
+  waitingBeAnswered.value = true
+}).catch(function(imError) {
+  // 发送失败
+  console.warn('sendMessage error:', imError);
+});
+
+    }
+
+// 医院到救护车 发送房间号
+const sendTwo = ()=>{
+  let message = chat.createTextMessage({
+  to: '1352902597856288770',
+  conversationType: TencentCloudChat.TYPES.CONV_C2C,
+  // 消息优先级，用于群聊。如果某个群的消息超过了频率限制，后台会优先下发高优先级的消息
+  // priority: TencentCloudChat.TYPES.MSG_PRIORITY_NORMAL,
+  payload: {
+    text: JSON.stringify({"messageType":901,"data":route.query?.page})
   },
   // 如果您发消息需要已读回执，需购买旗舰版套餐，并且创建消息时将 needReadReceipt 设置为 true
   needReadReceipt: true
@@ -301,8 +340,7 @@ promise.then(function(imResponse) {
   // 发送失败
   console.warn('sendMessage error:', imError);
 });
-
-    }
+}    
 
 const isFullScreen = ref(false)
 
@@ -368,6 +406,13 @@ console.log(store.remoteStreams,'storerxxemoteStreams');
   userLeaves()
 });
 
+
+($bus as any).on('SendTheRoomNumber', async (event: any) => {
+  // 发送房间号
+    sendTwo()
+});
+
+
 const userLeaves = ()=>{
   emit('doSth');
 }
@@ -392,6 +437,16 @@ onUnmounted(()=>{
 </style>
 
 <style lang='stylus' scoped>
+.loadingClass
+  width: 30px
+
+.AnsweringClass
+  font-size: 30px
+
+.FirstMedicalUniversityres
+  margin-top:  20px
+  display: flex
+  align-items: center
 .fontsize
   font-size: 19px
   background: #fff

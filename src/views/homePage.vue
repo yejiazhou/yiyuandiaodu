@@ -83,12 +83,22 @@ let onMessageReceived = function(event) {
   messageList.forEach((message) => {
     if (message.type === TencentCloudChat.TYPES.MSG_TEXT) {
       // 文本消息 - https://web.sdk.qcloud.com/im/doc/v3/zh-cn/Message.html#.TextPayload
-      console.log('文本消息',JSON.parse(event?.data[0].payload.text).data);
+      console.log('医院文本消息',JSON.parse(event?.data[0].payload.text).data);
       // console.log('文本消息',event.data);
       // whetherFirstAidOrNnot.value = true
 
       if(JSON.parse(event?.data[0].payload.text).data=='咨询医院是否接听'){
           whetherFirstAidOrNnot.value = true
+          return
+      }
+      if(JSON.parse(event?.data[0].payload.text).data=='救护车收到消息'){
+          //  医院先退出房间 将房间号发给救护车 
+          // 先离开房间
+        ($bus as any).emit('LeaveTheRoom', event);
+          // 再发送房间号过去
+        ($bus as any).emit('SendTheRoomNumber', event);
+        return
+
       }else{
           roomId.value = JSON.parse(event?.data[0].payload.text).data
           router.push({

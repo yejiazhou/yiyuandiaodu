@@ -167,6 +167,10 @@ async function createLocalStream() {
     addFailedLog(`LocalStream failed to initialize. Error: ${error.message_}`);
   }
 }
+// 离开自己房间
+($bus as any).on('LeaveTheRoom', async (msg: any) => {
+  handleLeave()
+});
 
 onMounted(() => {
       handleJoin()
