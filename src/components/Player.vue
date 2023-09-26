@@ -130,14 +130,14 @@
             附近医院
           </span>
           <span class="FirstMedicalUniversity">
-            <el-button color="#479ea7" style="color:#fff;font-size:23px">
-            第一医大<el-icon class="el-icon--right"><PhoneFilled /></el-icon>
+            <el-button color="#479ea7" style="color:#fff;font-size:23px" @click="send">
+            救护车1<el-icon class="el-icon--right"><PhoneFilled /></el-icon>
           </el-button>
             <el-button color="#479ea7" style="color:#fff;font-size:23px">
-            中医院<el-icon class="el-icon--right"><PhoneFilled /></el-icon>
+            救护车2<el-icon class="el-icon--right"><PhoneFilled /></el-icon>
           </el-button>
             <el-button color="#479ea7" style="color:#fff;font-size:23px">
-            第五医院<el-icon class="el-icon--right"><PhoneFilled /></el-icon>
+            救护车3<el-icon class="el-icon--right"><PhoneFilled /></el-icon>
           </el-button>
           </span>
         </span>
@@ -202,6 +202,107 @@ import { ElMessage } from 'element-plus';
 import { PhoneFilled } from '@element-plus/icons-vue'
 
 import type { TabsPaneContext } from 'element-plus'
+
+import TencentCloudChat from '@tencentcloud/chat';
+
+
+let options = {
+  SDKAppID: 1400386885 // 接入时需要将0替换为您的即时通信 IM 应用的 SDKAppID
+};
+// 创建 SDK 实例，`TIM.create()`方法对于同一个 `SDKAppID` 只会返回同一份实例
+var chat = TencentCloudChat.create(options); // SDK 实例通常用 chat 表示
+
+
+chat.setLogLevel(0); // 普通级别，日志量较多，接入时建议使用
+
+
+// 监听事件，例如：
+chat.on(TencentCloudChat.EVENT.SDK_READY, function (event) {
+// 收到离线消息和会话列表同步完毕通知，接入侧可以调用 sendMessage 等需要鉴权的接口
+// event.name - TIM.EVENT.SDK_READY
+console.log(event.name,'eventname');
+
+    });
+
+
+
+let onMessageReceived = function(event) {
+  // event.data - 存储 Message 对象的数组 - [Message]
+  const messageList = event.data;
+  messageList.forEach((message) => {
+    if (message.type === TencentCloudChat.TYPES.MSG_TEXT) {
+      // 文本消息 - https://web.sdk.qcloud.com/im/doc/v3/zh-cn/Message.html#.TextPayload
+      // store.roomId = roomId.value  
+      // console.log(store.roomId,'roomIdvalue');
+      
+    } else if (message.type === TencentCloudChat.TYPES.MSG_IMAGE) {
+      // 图片消息 - https://web.sdk.qcloud.com/im/doc/v3/zh-cn/Message.html#.ImagePayload
+      console.log('图片消息');
+
+    } else if (message.type === TencentCloudChat.TYPES.MSG_SOUND) {
+      // 音频消息 - https://web.sdk.qcloud.com/im/doc/v3/zh-cn/Message.html#.AudioPayload
+      console.log('音频消息');
+
+    } else if (message.type === TencentCloudChat.TYPES.MSG_VIDEO) {
+      // 视频消息 - https://web.sdk.qcloud.com/im/doc/v3/zh-cn/Message.html#.VideoPayload
+      console.log('视频消息');
+
+    } else if (message.type === TencentCloudChat.TYPES.MSG_FILE) {
+      // 文件消息 - https://web.sdk.qcloud.com/im/doc/v3/zh-cn/Message.html#.FilePayload
+      console.log('文件消息');
+
+    } else if (message.type === TencentCloudChat.TYPES.MSG_CUSTOM) {
+      // 自定义消息 - https://web.sdk.qcloud.com/im/doc/v3/zh-cn/Message.html#.CustomPayload
+      console.log('自定义消息');
+
+    } else if (message.type === TencentCloudChat.TYPES.MSG_MERGER) {
+      // 合并消息 - https://web.sdk.qcloud.com/im/doc/v3/zh-cn/Message.html#.MergerPayload
+      console.log('合并消息');
+
+    } else if (message.type === TencentCloudChat.TYPES.MSG_LOCATION) {
+      // 地理位置消息 - https://web.sdk.qcloud.com/im/doc/v3/zh-cn/Message.html#.LocationPayload
+      console.log('地理位置消息');
+
+    } else if (message.type === TencentCloudChat.TYPES.MSG_GRP_TIP) {
+      // 群提示消息 - https://web.sdk.qcloud.com/im/doc/v3/zh-cn/Message.html#.GroupTipPayload
+      console.log('群提示消息');
+
+    } else if (message.type === TencentCloudChat.TYPES.MSG_GRP_SYS_NOTICE) {
+      // 群系统通知 - https://web.sdk.qcloud.com/im/doc/v3/zh-cn/Message.html#.GroupSystemNoticePayload
+      console.log('群系统通知');
+
+    }
+  });
+};
+chat.on(TencentCloudChat.EVENT.MESSAGE_RECEIVED, onMessageReceived);
+// 开始登录
+chat.login({userID: '1434048604853321730', userSig: 'eJw9TssKgkAU-ZfZFnKduTOOQptA6QWC5qJlMFNcxRzMTIj*PdNocRbnyXmx4yH37OCotSzyJSqpAJaT2tuWRYx7wGZ*N9XZOTJjDgGEVlrL2SFjbx1daCr4KBBQqxFSCO4H4j9A19FPmrh8FvmjCdMqHeIM3anj5WJng7IHWteIVRLvs63aFKtfsaP6*06FKEEEXL8-OuwzAQ__'});
+
+const send=()=> {
+let message = chat.createTextMessage({
+  to: '1352902597856288770',
+  conversationType: TencentCloudChat.TYPES.CONV_C2C,
+  // 消息优先级，用于群聊。如果某个群的消息超过了频率限制，后台会优先下发高优先级的消息
+  // priority: TencentCloudChat.TYPES.MSG_PRIORITY_NORMAL,
+  payload: {
+    text: JSON.stringify({"messageType":901,"data":"救护是否已准备"})
+  },
+  // 如果您发消息需要已读回执，需购买旗舰版套餐，并且创建消息时将 needReadReceipt 设置为 true
+  needReadReceipt: true
+  // 消息自定义数据（云端保存，会发送到对端，程序卸载重装后还能拉取到）
+  // cloudCustomData: 'your cloud custom data'
+});
+// 2. 发送消息
+let promise = chat.sendMessage(message);
+promise.then(function(imResponse) {
+  // 发送成功
+  console.log(imResponse);
+}).catch(function(imError) {
+  // 发送失败
+  console.warn('sendMessage error:', imError);
+});
+
+    }
 
 const isFullScreen = ref(false)
 

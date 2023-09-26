@@ -178,7 +178,7 @@ onMounted(() => {
 async function handleJoin() {
   store.sdkAppId = '1400386885'
   store.secretKey = '6e3d1939c4bf142211500724be71a26d439d83dc24277c42ce78c5b3a133a3e5'
-  store.userId = 'user_54123472'
+  store.userId = 'user_54123473'
   store.roomId = route.query?.page as any
   console.log( store.roomId,'storestore');
 

@@ -5,7 +5,7 @@
       <img src="../../assets/image/tupian.png" alt="TRTC" style='height: 100%;width:100%'/>
     </span>
     <span class="textClass">
-      120急救调度中心控制台
+      第一医院调度中心控制台
     </span>
   </div>
 </template>

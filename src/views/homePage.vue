@@ -1,8 +1,14 @@
 <template>
 <!--  eslint-disable   -->
   <el-row style='padding: 0 10px 40px 10px' class="elRowClass" id="myBtn">
-    <span class="absenceSeats" v-if="!whetherFirstAidOrNnot">
+    <span class="absenceSeats" v-if="!whetherFirstAidOrNnot && !waitTheVideo">
       坐席空闲中...
+      <span class="waitVideoConnection" v-if="waitTheVideo">
+        <span>等待视频连线...</span>
+        <span class="loadingClass">
+          <img src="../assets/loading.gif" alt="" style="width:100%;height:100%">
+        </span>
+      </span>
     </span>
     <span class="idleState" v-else @click="answerTheJump">
       <span class="AnswerImgClass">
@@ -49,7 +55,6 @@ import appStore from '@/store/index';
 import ShareClient from '@/utils/shareClient';
 import { useRouter } from "vue-router";
 import TencentCloudChat from '@tencentcloud/chat';
-import {Howl, Howler} from 'howler';
 
 
 let options = {
@@ -79,8 +84,24 @@ let onMessageReceived = function(event) {
     if (message.type === TencentCloudChat.TYPES.MSG_TEXT) {
       // 文本消息 - https://web.sdk.qcloud.com/im/doc/v3/zh-cn/Message.html#.TextPayload
       console.log('文本消息',JSON.parse(event?.data[0].payload.text).data);
-      whetherFirstAidOrNnot.value = true
-      roomId.value = JSON.parse(event?.data[0].payload.text).data
+      // console.log('文本消息',event.data);
+      // whetherFirstAidOrNnot.value = true
+
+      if(JSON.parse(event?.data[0].payload.text).data=='咨询医院是否接听'){
+          whetherFirstAidOrNnot.value = true
+      }else{
+          roomId.value = JSON.parse(event?.data[0].payload.text).data
+          router.push({
+            name: 'console', // 目标路由的名称
+            query: {
+              page: roomId.value, // 查询参数
+            },
+        })
+      }
+      // roomId.value = JSON.parse(event?.data[0].payload.text).data
+      // if(roomId.value){
+      //   whetherFirstAidOrNnot.value = true
+      // }
       // store.roomId = roomId.value  
       // console.log(store.roomId,'roomIdvalue');
       
@@ -130,16 +151,17 @@ let onMessageReceived = function(event) {
 // sound.play();  
 chat.on(TencentCloudChat.EVENT.MESSAGE_RECEIVED, onMessageReceived);
 // 开始登录
-chat.login({userID: '1434048604182233090', userSig: 'eJw9jr0OgjAUhd*lq4bc0tummDi4sIBR1IWRlAI3CEFERI3vroBxPD-fyXmxU3h07NBQa9mKS1RSASwnt7ctWzHXATbra1omTUPpt4cAQiut5ZxQauuOMpoAjgIBtQLk2nWFAO8-QPmYl5uiXhySwA*HgEf94x4V51tsKrPLnvm215R35rL3SxOvf2BH1fhOeShBcO69P2lZNIc_'});
+chat.login({userID: '1434048604853321730', userSig: 'eJw9TssKgkAU-ZfZFnKduTOOQptA6QWC5qJlMFNcxRzMTIj*PdNocRbnyXmx4yH37OCotSzyJSqpAJaT2tuWRYx7wGZ*N9XZOTJjDgGEVlrL2SFjbx1daCr4KBBQqxFSCO4H4j9A19FPmrh8FvmjCdMqHeIM3anj5WJng7IHWteIVRLvs63aFKtfsaP6*06FKEEEXL8-OuwzAQ__'});
 
-const send=(type, to, payload)=> {
+// 医院到120
+const send=()=> {
 let message = chat.createTextMessage({
-  to: '1430829915148386305',
+  to: '1434048604182233090',
   conversationType: TencentCloudChat.TYPES.CONV_C2C,
   // 消息优先级，用于群聊。如果某个群的消息超过了频率限制，后台会优先下发高优先级的消息
   // priority: TencentCloudChat.TYPES.MSG_PRIORITY_NORMAL,
   payload: {
-    text: JSON.stringify({"messageType":900,"data":""})
+    text: JSON.stringify({"messageType":902,"data":"医院收到消息"})
   },
   // 如果您发消息需要已读回执，需购买旗舰版套餐，并且创建消息时将 needReadReceipt 设置为 true
   needReadReceipt: true
@@ -149,24 +171,20 @@ let message = chat.createTextMessage({
 // 2. 发送消息
 let promise = chat.sendMessage(message);
 promise.then(function(imResponse) {
-  // 发送成功
-  console.log(imResponse);
+  // 发送成功 才跳转到医院的
+
 }).catch(function(imError) {
   // 发送失败
   console.warn('sendMessage error:', imError);
 });
 
     }
-  // sound.stop();
  
 
 const answerTheJump=()=>{
-    router.push({
-    name: 'console', // 目标路由的名称
-    query: {
-      page: roomId.value, // 查询参数
-    },
-})
+  whetherFirstAidOrNnot.value = false
+  waitTheVideo.value = true
+  send()
   }
 
 
@@ -181,6 +199,7 @@ let localClient: Client;
 let localStream: LocalStream;
 let shareClient: any;
 const whetherFirstAidOrNnot = ref(false)
+const waitTheVideo = ref(false)
 const audioMuted = ref(false);
 const videoMuted = ref(false);
 const roomId = ref('');
@@ -581,6 +600,13 @@ function copy() {
 <style lang='stylus' scoped>
 .btn-line
   padding-bottom 10px
+
+.waitVideoConnection
+  display: flex
+  align-items: center
+
+.loadingClass
+  width: 30px
 
 .idleState
   display: flex
