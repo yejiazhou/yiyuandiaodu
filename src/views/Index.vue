@@ -308,7 +308,9 @@ async function handleLeave() {
       ext3: store.sdkAppId,
     });
 
-
+    userouter.push({
+      name:'homePage'
+    })
   } catch (error: any) {
     addFailedLog(`Leave room failed. Error: ${error.message_}`);
     $aegis.reportEvent({

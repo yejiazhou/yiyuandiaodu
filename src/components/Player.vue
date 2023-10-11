@@ -202,7 +202,7 @@
 
 <script lang='ts' setup>
 /* eslint-disable */ 
-import { inject, nextTick, onUnmounted,ref } from 'vue';
+import { inject, nextTick, onUnmounted,ref,onMounted } from 'vue';
 import appStore from '@/store/index';
 import { ElMessage } from 'element-plus';
 import { PhoneFilled } from '@element-plus/icons-vue'
@@ -213,6 +213,8 @@ import TencentCloudChat from '@tencentcloud/chat';
 import { useRoute,useRouter } from 'vue-router';
 
 const route = useRoute()
+
+const roomNumber = ref()
 
 const waitingBeAnswered = ref(false)
 let options = {
@@ -324,7 +326,7 @@ const sendTwo = ()=>{
   // 消息优先级，用于群聊。如果某个群的消息超过了频率限制，后台会优先下发高优先级的消息
   // priority: TencentCloudChat.TYPES.MSG_PRIORITY_NORMAL,
   payload: {
-    text: JSON.stringify({"messageType":901,"data":route.query?.page})
+    text: JSON.stringify({"messageType":901,"data":roomNumber.value})
   },
   // 如果您发消息需要已读回执，需购买旗舰版套餐，并且创建消息时将 needReadReceipt 设置为 true
   needReadReceipt: true
@@ -416,6 +418,10 @@ console.log(store.remoteStreams,'storerxxemoteStreams');
 const userLeaves = ()=>{
   emit('doSth');
 }
+
+onMounted(()=>{
+roomNumber.value = route.query?.page
+})
 
 onUnmounted(()=>{
   console.log('组件将被销毁');
