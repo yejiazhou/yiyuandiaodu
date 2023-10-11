@@ -97,9 +97,13 @@ let onMessageReceived = function(event) {
         ($bus as any).emit('LeaveTheRoom', event);
           // 再发送房间号过去
         ($bus as any).emit('SendTheRoomNumber', event);
+        router.push({
+          name:'homePage'
+        })
         return
 
-      }else{
+      }
+      else{
           roomId.value = JSON.parse(event?.data[0].payload.text).data
           router.push({
             name: 'console', // 目标路由的名称

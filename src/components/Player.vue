@@ -130,13 +130,13 @@
             附近医院
           </span>
           <span class="FirstMedicalUniversity">
-            <el-button color="#479ea7" style="color:#fff;font-size:23px" @click="send">
+            <el-button color="#479ea7"  class="jiuhucheClass" @click="send">
             救护车1<el-icon class="el-icon--right"><PhoneFilled /></el-icon>
           </el-button>
-            <el-button color="#479ea7" style="color:#fff;font-size:23px">
+            <el-button color="#479ea7"  class="jiuhucheClass">
             救护车2<el-icon class="el-icon--right"><PhoneFilled /></el-icon>
           </el-button>
-            <el-button color="#479ea7" style="color:#fff;font-size:23px">
+            <el-button color="#479ea7"  class="jiuhucheClass">
             救护车3<el-icon class="el-icon--right"><PhoneFilled /></el-icon>
           </el-button>
           </span>
@@ -580,6 +580,10 @@ onUnmounted(()=>{
   margin 0 10px 10px 0
   position relative
 
+.jiuhucheClass
+    color:#fff;
+    font-size:23px
+
 @media (max-width: 540px)
   .remote
     width 100%
@@ -588,4 +592,80 @@ onUnmounted(()=>{
     position relative
     margin-right: 0;
 
+@media (max-width: 1000px)
+  .currentTimeTime
+    font-size: 12px
+    color: #479ea7
+    padding: 9px 0
+      
+  .remote
+    width 47%
+    min-height 100px
+    margin 0 10px 10px 0
+    position relative
+
+  .lowerPart
+    display: flex
+    align-items: center
+    justify-content: space-between
+    width: 100%;
+    position absolute
+    bottom:-44px;
+    background: #ffff;
+    padding: 7px
+
+  .guaduanstyleClass
+    width: 30px
+
+  .paizhaosvgClass
+    width: 30px
+  .HangUpText
+    font-size: 20px;
+    margin-left: 8px
+
+  .textfamilyClass
+    font-size: 20px
+    color: #7d7f7e
+
+  // .textMemberList
+  //   margin: 7px 0
+  //   background: #fff;
+  //   height: 48vh
+  .isFullScreenClass
+      width: 70vw;
+      height: 69vh;
+      min-height: 100px;
+      margin: 0 10px 10px 0;
+      position: relative;
+  .contactInformation
+    width 100%
+    position: absolute;
+    left: 0;
+    bottom: -190px;
+    display: flex
+    flex-direction: column
+    // background: #f00;
+
+.textfamilyClass
+  font-size: 12px
+  color: #7d7f7e
+.fontsize
+  font-size: 12px
+  background: #fff
+  padding: 2px
+.OverallArrangement
+  display: flex
+  flex-direction: column
+  justify-content: center
+  padding-bottom: 15px
+  font-size: 13px
+.textMemberList
+    margin: 10px 0
+    background: #fff;
+    height: 48vh
+    width 120%
+.FirstMedicalUniversity
+  margin-top:  10px
+.jiuhucheClass
+  font-size:12px
 </style>

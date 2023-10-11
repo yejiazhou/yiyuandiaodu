@@ -1,4 +1,4 @@
-<!-- eslint-disable max-len -->
+<!-- eslint-disable -->
 <template>
   <div class='text-white header'>
     <span class="headLogoClass">
@@ -42,7 +42,6 @@ function goToGithub() {
   window.open('https://github.com/LiteAVSDK/TRTC_Web', '_blank');
 }
 </script>
-
 <style lang="stylus" scoped>
 .container
   padding 0

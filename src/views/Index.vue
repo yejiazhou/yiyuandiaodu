@@ -1,6 +1,6 @@
 <template>
 <!-- eslint-disable -->
-  <el-row style='padding: 0 10px 0px 30px;height: 100vh;background: #efefef;' >
+  <el-row  class="rowClass">
     <el-col :md='{span: 18}' :sm='{span: 24}'>
       <!-- <Inputs/> -->
       <!-- <Device @switchDevice='switchDevice'/> -->
@@ -308,9 +308,7 @@ async function handleLeave() {
       ext3: store.sdkAppId,
     });
 
-     userouter.push({
-      name:'homePage'
-     })
+
   } catch (error: any) {
     addFailedLog(`Leave room failed. Error: ${error.message_}`);
     $aegis.reportEvent({
@@ -490,6 +488,12 @@ function copy() {
 </script>
 
 <style lang='stylus' scoped>
+.rowClass
+  padding: 0 10px 0px 30px
+  height: 100vh
+  background: #efefef
+
+
 .FamilyMembers
   display: flex
   align-items: center
@@ -633,5 +637,11 @@ function copy() {
   height 25px
   width 25px
   cursor pointer
+
+@media (max-width: 1000px)
+  .rowClass
+    padding: 0 10px 0px 10px
+    height: 100vh
+    background: #efefef
 
 </style>
