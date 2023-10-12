@@ -298,7 +298,7 @@ let message = chat.createTextMessage({
   // 消息优先级，用于群聊。如果某个群的消息超过了频率限制，后台会优先下发高优先级的消息
   // priority: TencentCloudChat.TYPES.MSG_PRIORITY_NORMAL,
   payload: {
-    text: JSON.stringify({"messageType":901,"data":"咨询救护车是否接听"})
+    text: JSON.stringify({"messageType":901,"data":route.query?.page})
   },
   // 如果您发消息需要已读回执，需购买旗舰版套餐，并且创建消息时将 needReadReceipt 设置为 true
   needReadReceipt: true
@@ -310,7 +310,9 @@ let promise = chat.sendMessage(message);
 promise.then(function(imResponse) {
   // 发送成功
   console.log(imResponse);
-  waitingBeAnswered.value = true
+  // waitingBeAnswered.value = true
+// 离开房间
+  ($bus as any).emit('LeaveTheRoom', event);
 }).catch(function(imError) {
   // 发送失败
   console.warn('sendMessage error:', imError);

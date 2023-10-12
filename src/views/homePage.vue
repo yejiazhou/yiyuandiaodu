@@ -91,18 +91,18 @@ let onMessageReceived = function(event) {
           whetherFirstAidOrNnot.value = true
           return
       }
-      if(JSON.parse(event?.data[0].payload.text).data=='救护车收到消息'){
-          //  医院先退出房间 将房间号发给救护车 
-          // 先离开房间
-        ($bus as any).emit('LeaveTheRoom', event);
-          // 再发送房间号过去
-        ($bus as any).emit('SendTheRoomNumber', event);
-        router.push({
-          name:'homePage'
-        })
-        return
+      // if(JSON.parse(event?.data[0].payload.text).data=='救护车收到消息'){
+      //     //  医院先退出房间 将房间号发给救护车 
+      //     // 先离开房间
+      //   ($bus as any).emit('LeaveTheRoom', event);
+      //     // 再发送房间号过去
+      //   ($bus as any).emit('SendTheRoomNumber', event);
+      //   router.push({
+      //     name:'homePage'
+      //   })
+      //   return
 
-      }
+      // }
       else{
           roomId.value = JSON.parse(event?.data[0].payload.text).data
           router.push({
