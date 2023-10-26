@@ -57,9 +57,9 @@
                   <div>
                     性别:男 <br>
                     身高:1.75 <br>
-                    社保状态:                    
+                    保险状态:                    
                     <el-button type="success">
-                      社保
+                      医保
                     </el-button>
                     <el-button type="primary">商保</el-button>
                   </div>
@@ -86,9 +86,9 @@
                   <div>
                     性别:女 <br>
                     身高:1.65 <br>
-                    社保状态:
+                    保险状态:
                     <el-button type="success">
-                      社保
+                      医保
                     </el-button>
                     <el-button type="primary">商保</el-button>
                   </div>
@@ -114,9 +114,9 @@
                   <div>
                     性别:男 <br>
                     身高:1.85 <br>
-                    社保状态:
+                    保险状态:
                     <el-button type="success">
-                      社保
+                      医保
                     </el-button>
                     <el-button type="primary">商保</el-button>
                   </div>
@@ -169,18 +169,25 @@
             <span class='textcolor'>
               牡丹亭花园3栋901
             </span>
-          </span> 
           <span class="fontsize">
             物业公司:
             <span class='textcolor'>
               牡丹亭物业
             </span>
           </span>
+          </span> 
+
           <span class="fontsize">
             监控室电话:
             <span class='textcolor'>
               55555555
             </span>
+          <span class="fontsize">
+            家庭电话:
+            <span class='textcolor'>
+              13800000000
+            </span>
+          </span>
           </span>
           <span class="fontsize">
             社区:
