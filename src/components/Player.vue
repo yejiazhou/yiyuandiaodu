@@ -165,48 +165,48 @@
             联系方式
           </span>  
           <span class="fontsize">
-            具体地址: 
+            地址: 
             <span class='textcolor'>
               牡丹亭花园3栋901
             </span>
-          <span class="fontsize">
-            物业公司:
-            <span class='textcolor'>
-              牡丹亭物业
-            </span>
-          </span>
           </span> 
-
           <span class="fontsize">
             监控室电话:
             <span class='textcolor'>
-              55555555
+              5555 5555
             </span>
-          <span class="fontsize">
-            家庭电话:
-            <span class='textcolor'>
-              13800000000
-            </span>
-          </span>
+
           </span>
           <span class="fontsize">
             社区:
             <span class='textcolor'>
-              花园街道,牡丹社区
+              花园街道, 牡丹社区
             </span>
           </span>
           <span class="fontsize">
             电话:
             <span class='textcolor'>
-              88888888
+              3333 3333
             </span>
+
+
           </span>
           <span class="fontsize">
             网格员:
             <span class='textcolor'>
-              小王
+              张三, 133 000 000 00
             </span>
           </span>
+            <span class="fontsize">
+            紧急联系人:
+            <span class='textcolor'>
+              王五 151 333 333 33
+            </span>
+          </span>
+
+
+
+
           </span> 
           <span >
 
