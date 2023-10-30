@@ -139,16 +139,16 @@
             </el-tabs>
           </span> 
           <span class="textfamilyClass">
-            附近医院
+            附近救护车
           </span>
-          <span class="FirstMedicalUniversity">
+          <span :class="[isFullScreen ? 'FirstMedicalUniversityFull' : 'FirstMedicalUniversity']">
             <el-button color="#479ea7"  class="jiuhucheClass" @click="send">
             救护车1<el-icon class="el-icon--right"><PhoneFilled /></el-icon>
           </el-button>
-            <el-button color="#479ea7"  class="jiuhucheClass">
+            <el-button color="#479ea7"  :class="[isFullScreen ? 'jiuhucheClassFull' : 'jiuhucheClass']">
             救护车2<el-icon class="el-icon--right"><PhoneFilled /></el-icon>
           </el-button>
-            <el-button color="#479ea7"  class="jiuhucheClass">
+            <el-button color="#479ea7"  :class="[isFullScreen ? 'jiuhucheClassFullTwo' : 'jiuhucheClass']">
             救护车3<el-icon class="el-icon--right"><PhoneFilled /></el-icon>
           </el-button>
           </span>
@@ -696,4 +696,69 @@ onUnmounted(()=>{
   margin-top:  10px
 .jiuhucheClass
   font-size:12px
+
+@media (max-width: 1400px)
+  .remote
+    width: 65%;
+    min-height: 100px;
+    margin: 0 10px 10px 0;
+    position: relative;
+  .contactInformation
+    width: 100%;
+    position: absolute;
+    left: 0;
+    bottom: -31vh;
+    display: flex;
+    flex-direction: column;
+  .lowerPart
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    position: absolute;
+    bottom: -67px;
+    background: #fff;
+    padding: 3px;
+  .fontsize
+    font-size: 18px;
+    background: #fff;
+    padding: 2px;
+  .contactInformation
+    width: 100%;
+    position: absolute;
+    left: 0;
+    bottom: -35vh;
+    display: flex;
+    flex-direction: column;
+  .isFullScreenClass
+    width: 100vw;
+    height: 75vh;
+    min-height: 100px;
+    margin: 0 10px 10px 0;
+    position: relative;
+  .textfamilyClass
+    font-size: 17px;
+  .OverallArrangement
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-bottom: 15px;
+    font-size: 18px;
+.jiuhucheClass
+    color:#fff;
+    font-size: 23px;
+  .FirstMedicalUniversityFull
+    display: flex;
+    align-items: start;
+    flex-direction: column;
+  .jiuhucheClassFull
+    margin: 1rem 0
+    color:#fff;
+    font-size:23px
+    margin-left: 0
+  .jiuhucheClassFullTwo
+    // margin: 1rem 0
+    color:#fff;
+    font-size:23px
+    margin-left: 0
 </style>
